@@ -1,0 +1,4 @@
+dependencies {
+    compile "org.jspare.vertx:vertx-jspare-web:3.2.0"
+    compile "io.dgraph:dgraph4j:1.7.3"
+}

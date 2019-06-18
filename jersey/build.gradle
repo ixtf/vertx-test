@@ -1,0 +1,5 @@
+dependencies {
+    compile "com.englishtown.vertx:vertx-jersey:4.7.0",
+            "com.englishtown.vertx:vertx-hk2:2.5.0",
+            "org.glassfish.jersey.core:jersey-server:2.28"
+}

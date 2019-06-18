@@ -1,0 +1,10 @@
+rootProject.name = 'vertx-test'
+include 'amqp-bridge'
+include 'resteasy'
+include 'jersey'
+include 'jspare'
+include 'proton'
+include 'weld'
+include 'graphql'
+include 'reactor'
+

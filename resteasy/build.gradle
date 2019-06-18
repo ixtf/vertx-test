@@ -1,0 +1,5 @@
+dependencies {
+    compile "org.jboss.resteasy:resteasy-vertx:4.0.0.Final",
+            "io.lettuce:lettuce-core:5.1.6.RELEASE"
+//            "io.vertx:vertx-redis-client"
+}

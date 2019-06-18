@@ -1,0 +1,4 @@
+dependencies {
+    compile "io.vertx:vertx-web-graphql",
+            "io.projectreactor:reactor-core"
+}

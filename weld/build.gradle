@@ -1,0 +1,4 @@
+dependencies {
+    compile "org.jboss.weld.vertx:weld-vertx-core:1.2.0.Final",
+            "org.jboss.weld.vertx:weld-vertx-service-proxy:1.2.0.Final"
+}

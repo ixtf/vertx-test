@@ -1,0 +1,89 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'io.franzbecker.gradle-lombok' version '3.0.0'
+    id 'com.palantir.docker' version '0.22.1'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+allprojects {
+    group 'org.jzb.test'
+    version '1.0'
+
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'io.franzbecker.gradle-lombok'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://jitpack.io' }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "com.github.ixtf:bom:${bomVersion}"
+        }
+    }
+}
+subprojects { subproject ->
+    apply plugin: 'java'
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    apply plugin: 'application'
+    apply plugin: 'com.palantir.docker'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    shadowJar {
+        archiveName "${project.name}-fat.jar"
+    }
+    docker {
+        dependsOn shadowJar
+        name "test/${project.name}"
+//        tag "${project.version}"
+        files tasks.shadowJar.outputs
+        noCache true
+    }
+
+    dependencies {
+        compile 'com.github.ixtf.japp:vertx',
+                "io.vertx:vertx-web",
+                "io.vertx:vertx-rx-java2",
+                "io.vertx:vertx-auth-jwt",
+                "io.vertx:vertx-service-discovery",
+                "io.vertx:vertx-service-proxy",
+                "io.vertx:vertx-circuit-breaker",
+                "io.vertx:vertx-sockjs-service-proxy",
+                "io.vertx:vertx-hazelcast",
+                "io.vertx:vertx-health-check"
+
+        compileOnly "io.vertx:vertx-codegen"
+
+        testCompile "org.junit.jupiter:junit-jupiter-engine"
+    }
+
+    task annotationProcessing(type: JavaCompile, group: 'build') {
+        source = sourceSets.main.java
+        classpath = configurations.compile + configurations.compileOnly
+        destinationDir = project.file('src/main/generated')
+        options.compilerArgs = [
+                "-proc:only",
+                "-processor", "io.vertx.codegen.CodeGenProcessor",
+                "-Acodegen.output=${destinationDir.absolutePath}"
+        ]
+    }
+    compileJava {
+        dependsOn annotationProcessing
+    }
+    jar.manifest {
+        attributes(
+                'Implementation-Title': name,
+                'Implementation-Version': version,
+                'Built-By': System.getProperty('user.name'),
+                'Built-JDK': System.getProperty('java.version'),
+                'Source-Compatibility': sourceCompatibility,
+                'Target-Compatibility': targetCompatibility
+        )
+    }
+
+}
