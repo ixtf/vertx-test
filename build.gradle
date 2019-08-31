@@ -55,7 +55,8 @@ subprojects { subproject ->
                 "io.vertx:vertx-circuit-breaker",
                 "io.vertx:vertx-sockjs-service-proxy",
                 "io.vertx:vertx-hazelcast",
-                "io.vertx:vertx-health-check"
+                "io.vertx:vertx-health-check",
+                'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.3.0'
 
         compileOnly "io.vertx:vertx-codegen"
 
