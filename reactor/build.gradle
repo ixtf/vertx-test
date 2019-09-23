@@ -1,6 +1,12 @@
+plugins {
+    id 'io.dotinc.vertx-codegen-plugin' version '0.0.1'
+}
 dependencies {
     compile "io.vertx:vertx-web",
             "com.github.ixtf.persistence:mongo",
             "com.github.ixtf.persistence:redis",
             "com.github.ixtf.japp:poi"
+}
+codeGen {
+    vertxVersion = '3.7.1'
 }

@@ -7,4 +7,5 @@ include 'proton'
 include 'weld'
 include 'graphql'
 include 'reactor'
+include 'graphql-java'
 

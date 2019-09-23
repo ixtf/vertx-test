@@ -1,0 +1,11 @@
+type Query {
+    operators(first: Int=0,pageSize:Int=50): [Operator]
+    hello: String
+}
+
+type Operator {
+    id: ID!
+    name: String
+    hrId: String
+    admin: Boolean
+}

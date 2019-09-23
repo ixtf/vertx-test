@@ -2,7 +2,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'io.franzbecker.gradle-lombok' version '3.0.0'
     id 'com.palantir.docker' version '0.22.1'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 allprojects {
     group 'org.jzb.test'
@@ -75,6 +75,13 @@ subprojects { subproject ->
     }
     compileJava {
         dependsOn annotationProcessing
+    }
+    sourceSets {
+        main {
+            java {
+                srcDirs += 'src/main/generated'
+            }
+        }
     }
     jar.manifest {
         attributes(
