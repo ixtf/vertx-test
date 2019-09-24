@@ -1,4 +1,5 @@
 plugins {
+    id 'java'
     id 'io.dotinc.vertx-codegen-plugin' version '0.0.1'
 }
 dependencies {
@@ -7,6 +8,7 @@ dependencies {
             "com.github.ixtf.persistence:redis",
             "com.github.ixtf.japp:poi"
 }
-codeGen {
-    vertxVersion = '3.7.1'
-}
+
+apply plugin: 'io.dotinc.vertx-codegen-plugin'
+
+mainClassName = 'org.jzb.test.reactor.ReactorServer'

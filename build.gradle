@@ -63,26 +63,26 @@ subprojects { subproject ->
         testCompile "org.junit.jupiter:junit-jupiter-engine"
     }
 
-    task annotationProcessing(type: JavaCompile, group: 'build') {
-        source = sourceSets.main.java
-        classpath = configurations.compile + configurations.compileOnly
-        destinationDir = project.file('src/main/generated')
-        options.compilerArgs = [
-                "-proc:only",
-                "-processor", "io.vertx.codegen.CodeGenProcessor",
-                "-Acodegen.output=${destinationDir.absolutePath}"
-        ]
-    }
-    compileJava {
-        dependsOn annotationProcessing
-    }
-    sourceSets {
-        main {
-            java {
-                srcDirs += 'src/main/generated'
-            }
-        }
-    }
+//    task annotationProcessing(type: JavaCompile, group: 'build') {
+//        source = sourceSets.main.java
+//        classpath = configurations.compile + configurations.compileOnly
+//        destinationDir = project.file('src/main/generated')
+//        options.compilerArgs = [
+//                "-proc:only",
+//                "-processor", "io.vertx.codegen.CodeGenProcessor",
+//                "-Acodegen.output=${destinationDir.absolutePath}"
+//        ]
+//    }
+//    compileJava {
+//        dependsOn annotationProcessing
+//    }
+//    sourceSets {
+//        main {
+//            java {
+//                srcDirs += 'src/main/generated'
+//            }
+//        }
+//    }
     jar.manifest {
         attributes(
                 'Implementation-Title': name,

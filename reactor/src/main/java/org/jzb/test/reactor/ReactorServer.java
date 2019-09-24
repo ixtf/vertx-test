@@ -6,14 +6,20 @@ import io.reactivex.Flowable;
 import io.vertx.core.*;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CookieHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.ResponseContentTypeHandler;
+import io.vertx.serviceproxy.ServiceProxyBuilder;
+import org.apache.commons.io.FileUtils;
+import org.jzb.test.reactor.proxy.RestProxyService;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -43,14 +49,25 @@ public class ReactorServer extends AbstractVerticle {
     @Override
     public void start(Future<Void> future) throws Exception {
         final Router router = Router.router(vertx);
-        router.route().handler(BodyHandler.create());
+        router.route().handler(BodyHandler.create().setUploadsDirectory(FileUtils.getTempDirectoryPath()));
         router.route().handler(ResponseContentTypeHandler.create());
         router.route().handler(CookieHandler.create());
+        router.route().handler(CorsHandler.create("*").allowCredentials(false).allowedHeader("x-requested-with").allowedHeader("access-control-allow-origin").allowedHeader("origin").allowedHeader("content-type").allowedHeader("accept").allowedHeader("authorization").allowedMethod(HttpMethod.POST).allowedMethod(HttpMethod.PUT).allowedMethod(HttpMethod.PATCH).allowedMethod(HttpMethod.GET).allowedMethod(HttpMethod.DELETE).allowedMethod(HttpMethod.HEAD).allowedMethod(HttpMethod.OPTIONS));
 
-//        System.out.println(System.getProperty("java.io.tmpdir"));
-//        router.route().handler(BodyHandler.create().setUploadsDirectory(System.getProperty("java.io.tmpdir")));
+        final RestProxyService restProxyService = new ServiceProxyBuilder(vertx)
+                .setAddress(RestProxyService.ADDRESS)
+                .build(RestProxyService.class);
+        router.get("/proxy").handler(rc -> {
+            restProxyService.save("test", new JsonObject().put("test", "test"), ar -> {
+                if (ar.succeeded()) {
+                    rc.response().end(ar.result());
+                } else {
+                    rc.fail(ar.cause());
+                }
+            });
+        });
 
-        router.post("/uploads").produces(APPLICATION_OCTET_STREAM).handler(BodyHandler.create().setUploadsDirectory(System.getProperty("java.io.tmpdir"))).handler(rc -> {
+        router.post("/uploads").produces(APPLICATION_OCTET_STREAM).handler(rc -> {
             final io.vertx.reactivex.core.Vertx vertx = io.vertx.reactivex.core.Vertx.newInstance(this.vertx);
             vertx.rxExecuteBlocking(f -> Flowable.fromIterable(rc.fileUploads())
                     .map(FileUpload::uploadedFileName)
@@ -95,6 +112,7 @@ public class ReactorServer extends AbstractVerticle {
                 .requestHandler(router)
                 .listen(8080, ar -> future.handle(ar.mapEmpty()));
     }
+
     public static final JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "192.168.0.38");
 
     public static void main(String[] args) {
