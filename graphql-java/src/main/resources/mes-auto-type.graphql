@@ -1,0 +1,12 @@
+type Operator {
+    id: ID!
+    name: String
+    hrId: String
+    admin: Boolean
+}
+type OperatorQuery {
+    first: Int
+    pageSize: Int
+    count: Int
+    operators: [Operator]
+}

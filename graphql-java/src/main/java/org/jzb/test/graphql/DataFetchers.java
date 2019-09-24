@@ -18,8 +18,8 @@ import java.util.Map;
 public class DataFetchers {
     private static final Jmongo jmongo = Jmongo.of(JmongoDev.class);
     private static DataFetcher operators = env -> {
-        int first = env.getArgument("first");
-        int pageSize = env.getArgument("pageSize");
+        final int first = env.getArgument("first");
+        final int pageSize = env.getArgument("pageSize");
         final MongoCollection<Document> t_operator = jmongo.collection(Operator.class);
         final Mono<Long> count$ = Mono.from(t_operator.countDocuments());
         final Mono<List<Operator>> operators$ = Flux.from(t_operator.find().skip(first).limit(pageSize).batchSize(pageSize))
@@ -34,7 +34,10 @@ public class DataFetchers {
 
     public static RuntimeWiring buildWiring() {
         return RuntimeWiring.newRuntimeWiring().type("Query", builder -> builder
-                .dataFetcher("hello", env -> "world")
+                .dataFetcher("hello", env -> {
+                    env.getRoot();
+                    return "world";
+                })
                 .dataFetcher("operators", operators)
         ).build();
     }
