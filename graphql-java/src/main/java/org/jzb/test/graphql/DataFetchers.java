@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class DataFetchers {
     private static final Jmongo jmongo = Jmongo.of(JmongoDev.class);
-    private static DataFetcher operators = env -> {
+    private static DataFetcher listOperator = env -> {
         final int first = env.getArgument("first");
         final int pageSize = env.getArgument("pageSize");
         final MongoCollection<Document> t_operator = jmongo.collection(Operator.class);
@@ -38,7 +38,7 @@ public class DataFetchers {
                     env.getRoot();
                     return "world";
                 })
-                .dataFetcher("operators", operators)
+                .dataFetcher("listOperator", listOperator)
         ).build();
     }
 }

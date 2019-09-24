@@ -4,6 +4,6 @@ type Mutation {
 }
 
 type Query {
-    operators(first: Int=0,pageSize:Int=50): OperatorQuery
+    listOperator(first: Int=0,pageSize:Int=50): OperatorQuery
     hello: String
 }

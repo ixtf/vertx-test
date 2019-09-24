@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-import static com.github.ixtf.japp.core.Constant.MAPPER;
 import static org.jzb.test.graphql.GraphqlJavaServer.INJECTOR;
 
 /**
@@ -32,8 +31,8 @@ public class GraphqlJavaWorker extends AbstractVerticle {
             final ExecutionResult executionResult = graphQL.execute(executionInput);
 //            final ExecutionResult executionResult = graphQL.execute(query);
             final Object data = executionResult.getData();
-            return MAPPER.writeValueAsString(data);
-//            return new JsonObject().put("data", data).encode();
+//            return MAPPER.writeValueAsString(data);
+            return new JsonObject().put("data", data).encode();
 //                final ExecutionInput input = new ExecutionInput(query, null, queryJson, null, extractVariables(queryJson));
         }).subscribe(it -> {
             reply.reply(it);
